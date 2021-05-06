@@ -1,30 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 class DogRequest extends Component {
   constructor() {
     super();
 
     this.state = {
-      message: '',
-      status: '',
+      url: '',
+      loading: true,
     }
-
     this.handleFetch = this.handleFetch.bind(this);
-    this.imageGenerator = this.imageGenerator.bind(this)
-
   }
 
   handleFetch() {
-    fetch('https://dog.ceo/api/breeds/image/random')
+    this.setState({ loading: true }, () => {
+      fetch('https://dog.ceo/api/breeds/image/random')
       .then(response => response.json())
       .then(data => this.setState({
-        message: data.message,
-        status: data.status,
+        url: data.message,
+        loading: false,
       }))
-  }
-
-  imageGenerator() {
-
+    })
   }
 
   componentDidMount() {
@@ -32,34 +27,19 @@ class DogRequest extends Component {
   }
 
   render() {
+    const { url, loading } = this.state;
     const loadingElement = <span>Loading...</span>
-    const { message } = this.state;
+    console.log('render');
 
     return (
       <div>
         <div>
-          { message ? <img src={ message } alt="dog"/> : loadingElement }
+          { loading ? loadingElement : <img src={url} alt="dog" /> }
         </div>
-        <button onClick = {this.handleFetch} >New Dog</button>
-      
-        
+        <button onClick = {this.handleFetch} >Next Dog</button>
       </div>
     )
   }
 }
 
 export default DogRequest;
-
-
-
-
-
-/* const fetch = require("node-fetch");
-
-const fetchPromise = () => {
-  fetch('https://dog.ceo/api/breeds/image/random')
-    .then(response => response.json())
-    .then(data => console.log(data));
-};
-
-fetchPromise(); */
